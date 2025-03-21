@@ -101,17 +101,33 @@ static zend_always_inline void php_cmark_node_visitor_call(
 		} break;
 
 		case IS_ARRAY: {
-			Bucket *bucket = NULL;
 			zval   *reset   = NULL;
 
 			php_cmark_assert_count(result,
 				1, 0, return, "return [Event => IVisitable] expected");
 
-			ZEND_HASH_FOREACH_BUCKET(Z_ARRVAL_P(result), bucket) {
-				event  = bucket->h;
-				reset  = &bucket->val;
-				break;
-			} ZEND_HASH_FOREACH_END();
+			HashTable *ht = Z_ARRVAL_P(result);
+#if PHP_VERSION_ID >= 80200
+			if (HT_IS_PACKED(ht)) {
+				zend_ulong key;
+				zval *val;
+				ZEND_HASH_PACKED_FOREACH_KEY_VAL(ht, key, val) {
+					event = key;
+					reset = val;
+					break;
+				} ZEND_HASH_FOREACH_END();
+			}
+			else {
+#endif
+				Bucket *bucket = NULL;
+				ZEND_HASH_FOREACH_BUCKET(ht, bucket) {
+					event  = bucket->h;
+					reset  = &bucket->val;
+					break;
+				} ZEND_HASH_FOREACH_END();
+#if PHP_VERSION_ID >= 80200
+			}
+#endif
 
 			php_cmark_assert_range_ex(event, 
 				CMARK_EVENT_DONE, CMARK_EVENT_EXIT, 0,
