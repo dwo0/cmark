@@ -28,7 +28,7 @@ zend_object_handlers php_cmark_parser_handlers;
 
 typedef struct _php_cmark_parser_t {
 	cmark_parser *parser;
-	zend_bool finished;
+	bool finished;
 	zend_object std;
 } php_cmark_parser_t;
 

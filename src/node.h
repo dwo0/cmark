@@ -25,7 +25,7 @@ extern zend_object_handlers   php_cmark_node_handlers;
 
 typedef struct _php_cmark_node_t {
 	cmark_node* node;
-	zend_bool owned;
+	bool owned;
 	struct {
 		zend_refcounted_h gc;
 		uint32_t handle;

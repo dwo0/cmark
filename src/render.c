@@ -34,7 +34,7 @@ typedef struct _php_cmark_render_arg_t {
 typedef char* (*php_cmark_render_func)(cmark_node *n, int options, int width);
 typedef char* (*php_cmark_render_func_no_width)(cmark_node *n, int options);
 
-static inline void php_cmark_render(zval *retval, php_cmark_node_t *n, php_cmark_render_func func, php_cmark_render_arg_t *arg, zend_bool width) {
+static inline void php_cmark_render(zval *retval, php_cmark_node_t *n, php_cmark_render_func func, php_cmark_render_arg_t *arg, bool width) {
 	char *result = 
 		width ? 
 			((php_cmark_render_func)func)

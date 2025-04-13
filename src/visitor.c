@@ -36,7 +36,7 @@ typedef struct _php_cmark_node_visitor_t {
 	zend_function          *leave;
 } php_cmark_node_visitor_t;
 
-static zend_always_inline zend_bool php_cmark_node_visitor_shortcircuit(zend_function *fbc) {
+static zend_always_inline bool php_cmark_node_visitor_shortcircuit(zend_function *fbc) {
 	return	fbc->type == ZEND_USER_FUNCTION &&
 		fbc->op_array.last == 2 &&
 		fbc->op_array.opcodes[1].opcode == ZEND_RETURN &&
