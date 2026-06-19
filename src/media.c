@@ -35,9 +35,15 @@ typedef struct _php_cmark_node_media_t {
 	zval title;
 } php_cmark_node_media_t;
 
-#define php_cmark_node_media_from(o) \
-	((php_cmark_node_media_t*) \
-		((char*) o - XtOffsetOf(php_cmark_node_media_t, h.std)))
+#if PHP_VERSION_ID >= 80600
+#	define php_cmark_node_media_from(o) \
+		((php_cmark_node_media_t*) \
+			((char*) o - offsetof(php_cmark_node_media_t, h.std)))
+#else
+#	define php_cmark_node_media_from(o) \
+		((php_cmark_node_media_t*) \
+			((char*) o - XtOffsetOf(php_cmark_node_media_t, h.std)))
+#endif
 #define php_cmark_node_media_fetch(z) php_cmark_node_media_from(Z_OBJ_P(z))
 
 zend_object* php_cmark_node_media_create(zend_class_entry *ce) {

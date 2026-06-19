@@ -32,9 +32,15 @@ typedef struct _php_cmark_node_text_t {
 	zval literal;
 } php_cmark_node_text_t;
 
-#define php_cmark_node_text_from(o) \
-	((php_cmark_node_text_t*) \
-		((char*) o - XtOffsetOf(php_cmark_node_text_t, h.std)))
+#if PHP_VERSION_ID >= 80600
+#	define php_cmark_node_text_from(o) \
+		((php_cmark_node_text_t*) \
+			((char*) o - offsetof(php_cmark_node_text_t, h.std)))
+#else
+#	define php_cmark_node_text_from(o) \
+		((php_cmark_node_text_t*) \
+			((char*) o - XtOffsetOf(php_cmark_node_text_t, h.std)))
+#endif
 #define php_cmark_node_text_fetch(z) php_cmark_node_text_from(Z_OBJ_P(z))
 
 #if PHP_VERSION_ID >= 80000

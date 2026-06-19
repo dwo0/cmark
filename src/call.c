@@ -199,7 +199,11 @@ PHP_MINIT_FUNCTION(CommonMark_CQL)
 
 	memcpy(&php_cmark_call_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
+#if PHP_VERSION_ID >= 80600
+	php_cmark_call_handlers.offset = offsetof(php_cmark_call_t, std);
+#else
 	php_cmark_call_handlers.offset = XtOffsetOf(php_cmark_call_t, std);
+#endif
 	php_cmark_call_handlers.free_obj = php_cmark_call_free;
 	php_cmark_call_handlers.clone_obj = php_cmark_call_clone;
 

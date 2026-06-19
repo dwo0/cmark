@@ -105,8 +105,12 @@ zend_class_entry* php_cmark_node_class(cmark_node* node) {
 				return php_cmark_node_list_ordered_ce;
 			case CMARK_BULLET_LIST:
 				return php_cmark_node_list_bullet_ce;
-
+#if PHP_VERSION_ID >= 80600
+			default:
+				ZEND_UNREACHABLE();
+#else
 			EMPTY_SWITCH_DEFAULT_CASE();
+#endif
 		} break;
 		case CMARK_NODE_ITEM:
 			return php_cmark_node_item_ce;
@@ -142,8 +146,12 @@ zend_class_entry* php_cmark_node_class(cmark_node* node) {
 			return php_cmark_node_image_ce;
 		case CMARK_NODE_LINK:
 			return php_cmark_node_link_ce;
-
+#if PHP_VERSION_ID >= 80600
+			default:
+				ZEND_UNREACHABLE();
+#else
 		EMPTY_SWITCH_DEFAULT_CASE();
+#endif
 	}
 
 	return php_cmark_node_ce;
@@ -451,7 +459,11 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_handlers.unset_property = php_cmark_node_unset;
 	php_cmark_node_handlers.get_property_ptr_ptr = NULL;
 
+#if PHP_VERSION_ID >= 80600
+	php_cmark_node_handlers.offset = offsetof(php_cmark_node_t, std);
+#else
 	php_cmark_node_handlers.offset = XtOffsetOf(php_cmark_node_t, std);
+#endif
 
 	return SUCCESS;
 }

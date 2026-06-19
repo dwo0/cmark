@@ -45,9 +45,15 @@ typedef struct _php_cmark_node_t {
 	zval endColumn;
 } php_cmark_node_t;
 
-#define php_cmark_node_from(o) \
-	((php_cmark_node_t*) \
-		((char*) o - XtOffsetOf(php_cmark_node_t, std)))
+#if PHP_VERSION_ID >= 80600
+#	define php_cmark_node_from(o) \
+		((php_cmark_node_t*) \
+			((char*) o - offsetof(php_cmark_node_t, std)))
+#else
+#	define php_cmark_node_from(o) \
+		((php_cmark_node_t*) \
+			((char*) o - XtOffsetOf(php_cmark_node_t, std)))
+#endif
 #define php_cmark_node_fetch(z) php_cmark_node_from(Z_OBJ_P(z))
 #define php_cmark_node_zend(z) ((zend_object*) &(z)->std)
 

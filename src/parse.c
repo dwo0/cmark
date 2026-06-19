@@ -32,9 +32,15 @@ typedef struct _php_cmark_parser_t {
 	zend_object std;
 } php_cmark_parser_t;
 
-#define php_cmark_parser_from(o) \
-	((php_cmark_parser_t*) \
-		((char*) o - XtOffsetOf(php_cmark_parser_t, std)))
+#if PHP_VERSION_ID >= 80600
+#	define php_cmark_parser_from(o) \
+		((php_cmark_parser_t*) \
+			((char*) o - offsetof(php_cmark_parser_t, std)))
+#else
+#	define php_cmark_parser_from(o) \
+		((php_cmark_parser_t*) \
+			((char*) o - XtOffsetOf(php_cmark_parser_t, std)))
+#endif
 #define php_cmark_parser_fetch(z) php_cmark_parser_from(Z_OBJ_P(z))
 
 static inline void php_cmark_parser_free(zend_object *zo) {
@@ -183,7 +189,11 @@ PHP_MINIT_FUNCTION(CommonMark_Parser)
 	memcpy(&php_cmark_parser_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
 	php_cmark_parser_handlers.free_obj = php_cmark_parser_free;
+#if PHP_VERSION_ID >= 80600
+	php_cmark_parser_handlers.offset = offsetof(php_cmark_parser_t, std);
+#else
 	php_cmark_parser_handlers.offset = XtOffsetOf(php_cmark_parser_t, std);
+#endif
 
 	REGISTER_NS_LONG_CONSTANT("CommonMark\\Parser", "Normal", CMARK_OPT_DEFAULT, CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("CommonMark\\Parser", "Normalize", CMARK_OPT_NORMALIZE, CONST_CS|CONST_PERSISTENT);

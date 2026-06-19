@@ -37,9 +37,15 @@ typedef struct _php_cmark_node_code_block_t {
 	zval fence;
 } php_cmark_node_code_block_t;
 
-#define php_cmark_node_code_block_from(o) \
-	((php_cmark_node_code_block_t*) \
-		((char*) o - XtOffsetOf(php_cmark_node_code_block_t, h.h.std)))
+#if PHP_VERSION_ID >= 80600
+#	define php_cmark_node_code_block_from(o) \
+		((php_cmark_node_code_block_t*) \
+			((char*) o - offsetof(php_cmark_node_code_block_t, h.h.std)))
+#else
+#	define php_cmark_node_code_block_from(o) \
+		((php_cmark_node_code_block_t*) \
+			((char*) o - XtOffsetOf(php_cmark_node_code_block_t, h.h.std)))
+#endif
 #define php_cmark_node_code_block_fetch(z) php_cmark_node_code_block_from(Z_OBJ_P(z))
 
 zend_object* php_cmark_node_code_block_create(zend_class_entry *ce) {
